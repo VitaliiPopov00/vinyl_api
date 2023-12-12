@@ -2,7 +2,10 @@
 
 namespace app\models;
 
+use Yii;
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
@@ -10,20 +13,6 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
 
     const SCENARIO_LOGIN = 'login';
     const SCENARIO_REGISTER = 'register';
-
-    public function behaviors()
-    {
-        return [
-            [
-                'class' => TimestampBehavior::class,
-                'attributes' => [
-                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'update_at'],
-                    ActiveRecord::EVENT_BEFORE_UPDATE => ['update_at'],
-                ],
-                'value' => new Expression('NOW()'),
-            ],
-        ];
-    }
 
     /**
      * {@inheritdoc}
@@ -33,21 +22,36 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         return 'user';
     }
 
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['login', 'password', 'email', 'role_id'], 'required'],
+            [['login', 'password'], 'required'],
 
+            [['password'], 'match', 'pattern' => '/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d]{6,}$/', 'on' => static::SCENARIO_REGISTER],
+            [['email', 'password_repeat'], 'required', 'on' => static::SCENARIO_REGISTER],
             [['password_repeat'], 'compare', 'compareAttribute' => 'password', 'on' => static::SCENARIO_REGISTER],
-            [['password_repeat'], 'required', 'on' => static::SCENARIO_REGISTER],
-            [['login', 'email'], 'unique', 'on' => static::SCENARIO_LOGIN],
-            [['password'], 'match', 'pattern' => '/^[a-zA-Z\d]{6,}$/'],
+            [['login', 'email'], 'unique', 'on' => static::SCENARIO_REGISTER],
+            [['email'], 'email', 'on' => static::SCENARIO_REGISTER],
 
             [['created_at', 'updated_at'], 'safe'],
-            [['role_id'], 'integer'],
+            [['role_id'], 'safe'],
             [['login', 'password', 'email', 'token'], 'string', 'max' => 255],
             [['role_id'], 'exist', 'skipOnError' => true, 'targetClass' => Role::class, 'targetAttribute' => ['role_id' => 'id']],
         ];
@@ -100,9 +104,14 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         return Yii::$app->security->validatePassword($password, $this->password);
     }
 
-    public static function tableName()
+    public function setRoleID()
     {
-        return 'user';
+        $this->role_id = Role::getRoleIDByTitle('user');
+    }
+
+    public function setToken()
+    {
+        $this->token = Yii::$app->security->generateRandomString();
     }
 
     public static function findIdentity($id)
@@ -125,7 +134,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         return $this->token;
     }
 
-    public function validateAuthKey($authKey)
+    public function validateAuthKey($token)
     {
         return $this->token === $token;
     }

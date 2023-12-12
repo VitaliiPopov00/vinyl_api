@@ -32,11 +32,12 @@ $config = [
             'class' => 'yii\web\Response',
             'on beforeSend' => function ($event) {
                 $response = $event->sender;
-                if ($response->statusCode == 403) {
+                if ($response->statusCode == 401) {
                     $response->data = [
+                        'status' => false,
                         'error' => [
-                            'code' => 403,
-                            'message' => 'Forbidden for you',
+                            'code' => 401,
+                            'message' => 'Unauthorized',
                         ],
                     ];
                 }
@@ -72,17 +73,46 @@ $config = [
             'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
-                'OPTIONS api/user' => 'user/options',
-                'POST api/user' => 'user/register',
-
                 [
                     'pluralize' => false,
                     'prefix' => 'api',
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'user',
                     'extraPatterns' => [
-                        // 'OPTIONS ' => 'options',
-                        // 'POST ' => 'register',
+                        'POST ' => 'register',
+                        'POST login' => 'login',
+                        'POST logout' => 'logout',
+                        'GET <id>' => 'info',
+                    ],
+                ],
+                [
+                    'pluralize' => false,
+                    'prefix' => 'api',
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'genre',
+                    'extraPatterns' => [
+                        'GET ' => 'info',
+                        'GET <id>' => 'detail',
+                    ],
+                ],
+                [
+                    'pluralize' => false,
+                    'prefix' => 'api',
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'artist',
+                    'extraPatterns' => [
+                        'GET ' => 'info',
+                        'GET <id>' => 'detail',
+                    ],
+                ],
+                [
+                    'pluralize' => false,
+                    'prefix' => 'api',
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'album',
+                    'extraPatterns' => [
+                        'GET ' => 'info',
+                        'GET <id>' => 'detail',
                     ],
                 ],
             ],

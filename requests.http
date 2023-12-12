@@ -1,0 +1,64 @@
+# REGISTER
+POST http://localhost/api/user HTTP/1.1
+Content-Type: application/json
+
+{
+    "login": "vpopov",
+    "email": "vpopov@gmail.com",
+    "password": "Test123",
+    "password_repeat": "Test123"
+}
+
+###
+
+# LOGIN
+POST http://localhost/api/user/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "login": "vpopov",
+    "password": "Test123"
+}
+
+###
+
+# INFO USER (includes ID)
+GET http://localhost/api/user/3 HTTP/1.1
+
+###
+
+# LOGOUT
+POST http://localhost/api/user/logout HTTP/1.1
+Authorization: Bearer VfivAhUVZX1CAVmNNYUVzncKEhzMJyYO
+
+###
+
+# GENRE LIST
+GET http://localhost/api/genre HTTP/1.1
+
+###
+
+# GENRE ITEM (includes ID)
+GET http://localhost/api/genre/14 HTTP/1.1
+
+###
+
+# ARTIST LIST
+GET http://localhost/api/artist HTTP/1.1
+
+###
+
+# ARTIST ITEM (includes ID)
+GET http://localhost/api/artist/1 HTTP/1.1
+
+###
+
+# ALBUM LIST
+GET http://localhost/api/album HTTP/1.1
+
+###
+
+# ALBUM ITEM (includes ID)
+GET http://localhost/api/album/30 HTTP/1.1
+
+
