@@ -89,9 +89,9 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getSales()
+    public function getOrders()
     {
-        return $this->hasMany(Sale::class, ['user_id' => 'id']);
+        return $this->hasMany(Order::class, ['user_id' => 'id']);
     }
 
     public function setPasswordHash()
@@ -112,6 +112,50 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     public function setToken()
     {
         $this->token = Yii::$app->security->generateRandomString();
+    }
+
+    public function register()
+    {
+        if ($this->validate()) {
+            $this->setPasswordHash();
+            $this->setRoleID();
+
+            return $this->save(false);
+        } else {
+            return false;
+        }
+    }
+
+    public static function getUserInfo($id)
+    {
+        if (($user = static::findOne($id))) {
+            return [
+                'status' => true,
+                'data' => [
+                    'user' => [
+                        'id' => $user->id,
+                        'login' => $user->login,
+                        'email' => $user->email,
+                        'created_at' => $user->created_at,
+                        'role' => Role::getRole($user->role_id),
+                        'orders' => $user->getOrders()->all(),
+                    ],
+                ],
+            ];
+        } else {
+            return null;
+        }
+    }
+
+    public static function logout($id)
+    {
+        if (($user = User::findOne($id))) {
+            $user->token = null;
+
+            return $user->save(false);
+        } else {
+            return null;
+        }
     }
 
     public static function findIdentity($id)

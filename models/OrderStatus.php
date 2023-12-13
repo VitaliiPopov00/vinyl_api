@@ -49,8 +49,8 @@ class OrderStatus extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getSales()
+    public function getOrders()
     {
-        return $this->hasMany(Sale::class, ['status_id' => 'id']);
+        return $this->hasMany(Order::class, ['status_id' => 'id']);
     }
 }

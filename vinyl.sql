@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Дек 12 2023 г., 18:38
--- Версия сервера: 8.0.30
--- Версия PHP: 8.1.9
+-- Время создания: Дек 13 2023 г., 10:40
+-- Версия сервера: 10.3.22-MariaDB
+-- Версия PHP: 7.4.5
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,14 +28,14 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `album` (
-  `id` int UNSIGNED NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL,
   `title` varchar(255) NOT NULL,
-  `artist_id` int UNSIGNED NOT NULL,
-  `year_release_album` int NOT NULL,
-  `year_release_plate` int NOT NULL,
-  `price` int NOT NULL,
+  `artist_id` int(10) UNSIGNED NOT NULL,
+  `year_release_album` int(11) NOT NULL,
+  `year_release_plate` int(11) NOT NULL,
+  `price` int(11) NOT NULL,
   `logo` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Дамп данных таблицы `album`
@@ -81,9 +81,9 @@ INSERT INTO `album` (`id`, `title`, `artist_id`, `year_release_album`, `year_rel
 --
 
 CREATE TABLE `album_genre` (
-  `album_id` int UNSIGNED NOT NULL,
-  `genre_id` int UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `album_id` int(10) UNSIGNED NOT NULL,
+  `genre_id` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Дамп данных таблицы `album_genre`
@@ -159,9 +159,9 @@ INSERT INTO `album_genre` (`album_id`, `genre_id`) VALUES
 --
 
 CREATE TABLE `artist` (
-  `id` int UNSIGNED NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL,
   `title` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Дамп данных таблицы `artist`
@@ -207,9 +207,9 @@ INSERT INTO `artist` (`id`, `title`) VALUES
 --
 
 CREATE TABLE `genre` (
-  `id` int UNSIGNED NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL,
   `title` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Дамп данных таблицы `genre`
@@ -249,13 +249,26 @@ INSERT INTO `genre` (`id`, `title`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `order`
+--
+
+CREATE TABLE `order` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `status_id` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `order_status`
 --
 
 CREATE TABLE `order_status` (
-  `id` int UNSIGNED NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL,
   `title` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Дамп данных таблицы `order_status`
@@ -273,9 +286,9 @@ INSERT INTO `order_status` (`id`, `title`) VALUES
 --
 
 CREATE TABLE `role` (
-  `id` int UNSIGNED NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL,
   `title` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Дамп данных таблицы `role`
@@ -288,39 +301,27 @@ INSERT INTO `role` (`id`, `title`) VALUES
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `sale`
---
-
-CREATE TABLE `sale` (
-  `id` int UNSIGNED NOT NULL,
-  `user_id` int UNSIGNED NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status_id` int UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
 -- Структура таблицы `user`
 --
 
 CREATE TABLE `user` (
-  `id` int UNSIGNED NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL,
   `login` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT NULL,
   `token` varchar(255) DEFAULT NULL,
-  `role_id` int UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `role_id` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Дамп данных таблицы `user`
 --
 
 INSERT INTO `user` (`id`, `login`, `password`, `email`, `created_at`, `updated_at`, `token`, `role_id`) VALUES
-(3, 'vpopov', '$2y$13$YfeGEhJ8mhbCZ1JjHYju7e5ONSyDFRvW31Gi9wb8ckGjri0uqOpa6', 'vpopov@gmail.com', '2023-12-12 14:12:34', '2023-12-12 14:41:40', NULL, 1);
+(3, 'vpopov', '$2y$13$YfeGEhJ8mhbCZ1JjHYju7e5ONSyDFRvW31Gi9wb8ckGjri0uqOpa6', 'vpopov@gmail.com', '2023-12-12 14:12:34', '2023-12-13 07:34:28', NULL, 1),
+(4, 'vpopov1', '$2y$13$w0QeIFp.zi0sw0Ay7Mzoz./1WSBnglGlVrXJCfEjdvZxP6XeB7yCS', 'vpopov1@gmail.com', '2023-12-13 06:16:27', '2023-12-13 06:16:27', NULL, 1);
 
 --
 -- Индексы сохранённых таблиц
@@ -353,6 +354,14 @@ ALTER TABLE `genre`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Индексы таблицы `order`
+--
+ALTER TABLE `order`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `status_id` (`status_id`);
+
+--
 -- Индексы таблицы `order_status`
 --
 ALTER TABLE `order_status`
@@ -363,14 +372,6 @@ ALTER TABLE `order_status`
 --
 ALTER TABLE `role`
   ADD PRIMARY KEY (`id`);
-
---
--- Индексы таблицы `sale`
---
-ALTER TABLE `sale`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `status_id` (`status_id`);
 
 --
 -- Индексы таблицы `user`
@@ -387,43 +388,43 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT для таблицы `album`
 --
 ALTER TABLE `album`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT для таблицы `artist`
 --
 ALTER TABLE `artist`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT для таблицы `genre`
 --
 ALTER TABLE `genre`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+
+--
+-- AUTO_INCREMENT для таблицы `order`
+--
+ALTER TABLE `order`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT для таблицы `order_status`
 --
 ALTER TABLE `order_status`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT для таблицы `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT для таблицы `sale`
---
-ALTER TABLE `sale`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT для таблицы `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
@@ -443,11 +444,11 @@ ALTER TABLE `album_genre`
   ADD CONSTRAINT `album_genre_ibfk_2` FOREIGN KEY (`album_id`) REFERENCES `album` (`id`);
 
 --
--- Ограничения внешнего ключа таблицы `sale`
+-- Ограничения внешнего ключа таблицы `order`
 --
-ALTER TABLE `sale`
-  ADD CONSTRAINT `sale_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  ADD CONSTRAINT `sale_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `order_status` (`id`);
+ALTER TABLE `order`
+  ADD CONSTRAINT `order_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `order_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `order_status` (`id`);
 
 --
 -- Ограничения внешнего ключа таблицы `user`

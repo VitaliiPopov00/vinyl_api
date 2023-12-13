@@ -29,7 +29,7 @@ GET http://localhost/api/user/3 HTTP/1.1
 
 # LOGOUT
 POST http://localhost/api/user/logout HTTP/1.1
-Authorization: Bearer VfivAhUVZX1CAVmNNYUVzncKEhzMJyYO
+Authorization: Bearer B9cBMAMhoy2m5yF3Mn8CAXsCyeklf_OE
 
 ###
 

@@ -67,4 +67,15 @@ class Role extends \yii\db\ActiveRecord
             ? static::findOne(['id' => $id])->title 
             : null; 
     }
+
+    public static function getRole($id)
+    {
+        $role = static::findOne($id);
+        return $role
+            ? [
+                'id' => $role->id,
+                'title' => $role->title,
+            ]
+            : [];
+    }
 }

@@ -44,6 +44,19 @@ class Artist extends \yii\db\ActiveRecord
         ];
     }
 
+    public static function getArtistInfo($id)
+    {
+        if (($artist = static::findOne($id))) {
+            return [
+                'id' => $artist->id,
+                'title' => $artist->title,
+                'albums' => Album::getArtistAlbums($artist->id),
+            ];
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Gets query for [[Albums]].
      *

@@ -48,12 +48,12 @@ class Album extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'title' => 'Title',
+            'title' => 'Название',
             'artist_id' => 'Artist ID',
-            'year_release_album' => 'Year Release Album',
-            'year_release_plate' => 'Year Release Plate',
-            'price' => 'Price',
-            'logo' => 'Logo',
+            'year_release_album' => 'Год релиза альбома',
+            'year_release_plate' => 'Год релиза пластинки',
+            'price' => 'Цена',
+            'logo' => 'Обложка',
         ];
     }
 
@@ -77,28 +77,6 @@ class Album extends \yii\db\ActiveRecord
         return $this->hasOne(Artist::class, ['id' => 'artist_id']);
     }
 
-    public static function getAlbumList()
-    {
-        $albums = [];
-
-        foreach (static::find()->all() as $album) {
-            $albums[] = [
-                "id" => $album->id,
-                "title" => $album->title,
-                "artist" => Artist::findOne($album->artist_id),
-                "genres" => AlbumGenre::getGenreList($album->id),
-                "year_release_album" => $album->year_release_album,
-                "year_release_plate" => $album->year_release_plate,
-                "price" => $album->price,
-                "logo" => $album->logo,
-            ];
-        }
-
-        return $albums 
-            ? $albums 
-            : null;
-    }
-
     public static function getAlbum($id)
     {
         $album = static::findOne($id);
@@ -108,12 +86,35 @@ class Album extends \yii\db\ActiveRecord
                 "id" => $album->id,
                 "title" => $album->title,
                 "artist" => Artist::findOne($album->artist_id),
-                "genres" => AlbumGenre::getGenreList($album->id),
+                "genres" => AlbumGenre::getGenreListForAlbum($album->id),
                 "year_release_album" => $album->year_release_album,
                 "year_release_plate" => $album->year_release_plate,
                 "price" => $album->price,
                 "logo" => $album->logo,
             ]
-            : null;
+            : [];
+    }
+
+    public static function getAlbumList()
+    {
+        $albums = [];
+
+        foreach (static::find()->all() as $album) {
+            $albums[] = static::getAlbum($album->id);
+        }
+
+        return $albums;
+    }
+
+    public static function getArtistAlbums($artistID)
+    {
+        $albumsResult = [];
+        $albums = static::findAll(['artist_id' => $artistID]);
+
+        foreach ($albums as $album) {
+            $albumsResult[] = static::getAlbum($album->id);
+        }
+
+        return $albumsResult;
     }
 }

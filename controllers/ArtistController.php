@@ -72,13 +72,13 @@ class ArtistController extends ActiveController
 
     public function actionDetail($id)
     {
-        if (($artist = Artist::findOne($id))) {
+        if (($artistInfo = Artist::getArtistInfo($id))) {
             Yii::$app->response->statusCode = 200;
 
             return $this->asJson([
                 'status' => true,
                 'data' => [
-                    'artist' => $artist,
+                    'artist' => $artistInfo,
                 ]
             ]);
         } else {

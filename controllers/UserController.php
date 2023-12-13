@@ -63,17 +63,11 @@ class UserController extends ActiveController
         $user = new User();
         $user->scenario = User::SCENARIO_REGISTER;
 
-        if ($user->load(Yii::$app->request->post(), '') && $user->validate()) {
-            $user->setPasswordHash();
-            $user->setRoleID();
-
-            if ($user->save(false)) {
-                Yii::$app->response->statusCode = 204;
-            } else {
-                Yii::$app->response->statusCode = 500;
-            }
+        if ($user->load(Yii::$app->request->post(), '') && $user->register()) {
+            Yii::$app->response->statusCode = 204;
         } else {
             Yii::$app->response->statusCode = 422;
+
             return $this->asJson([
                 'status' => false,
                 'error' => [
@@ -147,22 +141,13 @@ class UserController extends ActiveController
 
     public function actionInfo($id)
     {
-        if (($user = User::findOne($id))) {
+        if (($userInfo = User::getUserInfo($id))) {
             Yii::$app->response->statusCode = 200;
-            return $this->asJson([
-                'status' => true,
-                'data' => [
-                    'user' => [
-                        'id' => $user->id,
-                        'login' => $user->login,
-                        'email' => $user->email,
-                        'created_at' => $user->created_at,
-                        'role_id' => $user->role_id,
-                    ],
-                ],
-            ]);
+
+            return $this->asJson($userInfo);
         } else {
             Yii::$app->response->statusCode = 404;
+
             return $this->asJson([
                 'status' => false,
                 'error' => [
@@ -175,10 +160,7 @@ class UserController extends ActiveController
 
     public function actionLogout()
     {
-        $user = User::findOne(Yii::$app->user->identity->id);
-        $user->token = null;
-
-        if ($user->save(false)) {
+        if (User::logout(Yii::$app->user->identity->id)) {
             Yii::$app->response->statusCode = 204;
         } else {
             Yii::$app->response->statusCode = 500;

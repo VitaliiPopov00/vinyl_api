@@ -67,16 +67,15 @@ class AlbumGenre extends \yii\db\ActiveRecord
         return $this->hasOne(Genre::class, ['id' => 'genre_id']);
     }
 
-    public static function getGenreList($albumID)
+    public static function getGenreListForAlbum($albumID)
     {
-        $genreList = AlbumGenre::findAll(["album_id" => $albumID]);
+        $genreList = static::findAll(["album_id" => $albumID]);
         $genreListResult = [];
 
         foreach ($genreList as $genre) {
-            $genreListResult[] = [
-                "id" => $genre->genre_id,
-                "title" => Genre::findOne($genre->genre_id)->title,
-            ];
+            $genre = Genre::findOne($genre->genre_id);
+
+            $genreListResult[] = $genre;
         }
 
         return $genreListResult;
