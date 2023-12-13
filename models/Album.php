@@ -97,13 +97,30 @@ class Album extends \yii\db\ActiveRecord
 
     public static function getAlbumList()
     {
-        $albums = [];
+        $albums = static::find()
+            ->with('artist', 'albumgenres');
+        $title = Yii::$app->request->get('title', '');
+        $artist = Yii::$app->request->get('artist', '');
+        $genre = Yii::$app->request->get('genre', '');
+        $genreID = Genre::findOne(['title' => $genre])->id;
+        $startPrice = Yii::$app->request->get('startPrice', 0);
+        $endPrice = Yii::$app->request->get('endPrice', 999999999);
+
+        $albums->where(['like', 'title', $title]);
+        $albums->andWhere(['artist.title', $artist]);
+
+        $albums = $albums->all();
+
+        var_dump($albums);
+        die;
+
+        $albumsResult = [];
 
         foreach (static::find()->all() as $album) {
-            $albums[] = static::getAlbum($album->id);
+            $albumsResult[] = static::getAlbum($album->id);
         }
 
-        return $albums;
+        return $albumsResult;
     }
 
     public static function getArtistAlbums($artistID)

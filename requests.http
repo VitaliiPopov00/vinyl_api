@@ -61,4 +61,9 @@ GET http://localhost/api/album HTTP/1.1
 # ALBUM ITEM (includes ID)
 GET http://localhost/api/album/30 HTTP/1.1
 
+###
+
+# ALBUMS SORT BY GET PARAMS
+GET http://localhost/api/album?title=ad HTTP/1.1
+
 

@@ -53,7 +53,22 @@ class Artist extends \yii\db\ActiveRecord
                 'albums' => Album::getArtistAlbums($artist->id),
             ];
         } else {
-            return null;
+            return [];
+        }
+    }
+
+    public static function getArtistList()
+    {
+        if (($artists = static::find()->all())) {
+            $artistsResult = [];
+
+            foreach ($artists as $artist) {
+                $artistsResult[] = static::getArtistInfo($artist->id);
+            }
+
+            return $artistsResult;
+        } else {
+            return [];
         }
     }
 

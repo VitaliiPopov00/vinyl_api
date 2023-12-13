@@ -65,7 +65,7 @@ class ArtistController extends ActiveController
         return $this->asJson([
             'status' => true,
             'data' => [
-                'artists' => Artist::find()->all(),
+                'artists' => Artist::getArtistList(),
             ],
         ]);
     }
@@ -79,7 +79,7 @@ class ArtistController extends ActiveController
                 'status' => true,
                 'data' => [
                     'artist' => $artistInfo,
-                ]
+                ],
             ]);
         } else {
             Yii::$app->response->statusCode = 404;
