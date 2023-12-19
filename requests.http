@@ -64,6 +64,6 @@ GET http://localhost/api/album/30 HTTP/1.1
 ###
 
 # ALBUMS SORT BY GET PARAMS
-GET http://localhost/api/album?title=ad HTTP/1.1
+GET http://localhost/api/album?artist=slip HTTP/1.1
 
 

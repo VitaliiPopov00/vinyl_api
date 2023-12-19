@@ -97,26 +97,27 @@ class Album extends \yii\db\ActiveRecord
 
     public static function getAlbumList()
     {
+        $albumsResult = [];
         $albums = static::find()
-            ->with('artist', 'albumgenres');
+            ->innerJoin('artist', 'artist.id = album.artist_id')
+            ->innerJoin('album_genre', 'album_genre.album_id = album.id')
+            ->innerJoin('genre', 'genre.id = album_genre.genre_id');
+        
         $title = Yii::$app->request->get('title', '');
         $artist = Yii::$app->request->get('artist', '');
         $genre = Yii::$app->request->get('genre', '');
-        $genreID = Genre::findOne(['title' => $genre])->id;
         $startPrice = Yii::$app->request->get('startPrice', 0);
         $endPrice = Yii::$app->request->get('endPrice', 999999999);
 
-        $albums->where(['like', 'title', $title]);
-        $albums->andWhere(['artist.title', $artist]);
+        if ($title) { $albums->where(['like', 'album.title', $title]); }
+        if ($artist) { $albums->andWhere(['like', 'artist.title', $artist]); }
+        if ($genre) { $albums->andWhere(['like', 'genre.title', $genre]); }
+        $albums->andWhere(['>=', 'price', $startPrice]);
+        $albums->andWhere(['<=', 'price', $endPrice]);
 
         $albums = $albums->all();
 
-        var_dump($albums);
-        die;
-
-        $albumsResult = [];
-
-        foreach (static::find()->all() as $album) {
+        foreach ($albums as $album) {
             $albumsResult[] = static::getAlbum($album->id);
         }
 
